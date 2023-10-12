@@ -8,19 +8,19 @@ class User {
   static #list = []
 
   constructor({ email, password, role }) {
-    this.email = email
+    this.email = String(email).toLowerCase()
     this.password = password
-    this.role = User.#converRole(role)
+    this.role = User.#convertRole(role)
   }
 
-  static #converRole = (role) => {
+  static #convertRole = (role) => {
     role = Number(role)
 
     if (isNaN(role)) {
       role = this.USER_ROLE.USER
     }
 
-    role = Object.value(this.USER_ROLE).includes(role)
+    role = Object.values(this.USER_ROLE).includes(role)
       ? role
       : this.USER_ROLE.USER
 
@@ -31,6 +31,17 @@ class User {
     const user = new User(data)
 
     this.#list.push(user)
+
+    console.log(this.#list)
+  }
+
+  static getByEmail(email) {
+    return (
+      this.#list.find(
+        (user) =>
+          user.email === String(email).toLowerCase(),
+      ) || null
+    )
   }
 }
 
