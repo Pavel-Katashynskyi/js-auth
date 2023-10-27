@@ -8,9 +8,21 @@ const { Confirm } = require('../class/confirm')
 const { Session } = require('../class/session')
 
 User.create({
-  email: 'test@mail.com',
+  email: 'user@mail.com',
   password: 123,
   role: 1,
+})
+
+User.create({
+  email: 'admin@mail.com',
+  password: 123,
+  role: 2,
+})
+
+User.create({
+  email: 'developer@mail.com',
+  password: 123,
+  role: 3,
 })
 
 // ================================================================
@@ -22,7 +34,7 @@ router.get('/signup', function (req, res) {
   // res.render генерує нам HTML сторінку
 
   // ↙️ cюди вводимо назву файлу з сontainer
-  res.render('signup', {
+  return res.render('signup', {
     // вказуємо назву контейнера
     name: 'signup',
     // вказуємо назву компонентів
@@ -93,11 +105,16 @@ router.post('/signup', function (req, res) {
   }
 })
 
+// ================================================================
+
+// router.get Створює нам один ентпоїнт
+
+// ↙️ тут вводимо шлях (PATH) до сторінки
 router.get('/recovery', function (req, res) {
   // res.render генерує нам HTML сторінку
 
   // ↙️ cюди вводимо назву файлу з сontainer
-  res.render('recovery', {
+  return res.render('recovery', {
     // вказуємо назву контейнера
     name: 'recovery',
     // вказуємо назву компонентів
@@ -123,6 +140,7 @@ router.post('/recovery', function (req, res) {
       message: "Помилка. Обов'язкові поля відсутні",
     })
   }
+
   try {
     const user = User.getByEmail(email)
 
@@ -135,7 +153,7 @@ router.post('/recovery', function (req, res) {
     Confirm.create(email)
 
     return res.status(200).json({
-      message: 'Код для відновлення паролю відправленно',
+      message: 'Код для відновлення паролю відправлено',
     })
   } catch (err) {
     return res.status(400).json({
@@ -144,11 +162,16 @@ router.post('/recovery', function (req, res) {
   }
 })
 
+// ================================================================
+
+// router.get Створює нам один ентпоїнт
+
+// ↙️ тут вводимо шлях (PATH) до сторінки
 router.get('/recovery-confirm', function (req, res) {
   // res.render генерує нам HTML сторінку
 
   // ↙️ cюди вводимо назву файлу з сontainer
-  res.render('recovery-confirm', {
+  return res.render('recovery-confirm', {
     // вказуємо назву контейнера
     name: 'recovery-confirm',
     // вказуємо назву компонентів
@@ -180,11 +203,12 @@ router.post('/recovery-confirm', function (req, res) {
 
     if (!email) {
       return res.status(400).json({
-        message: 'Код не інує',
+        message: 'Код не існує',
       })
     }
 
     const user = User.getByEmail(email)
+
     if (!user) {
       return res.status(400).json({
         message: 'Користувач з таким email не існує',
@@ -208,16 +232,18 @@ router.post('/recovery-confirm', function (req, res) {
   }
 })
 
+// ↙️ тут вводимо шлях (PATH) до сторінки
 router.get('/signup-confirm', function (req, res) {
-  const { renew } = req.query
+  const { renew, email } = req.query
 
   if (renew) {
     Confirm.create(email)
   }
+
   // res.render генерує нам HTML сторінку
 
   // ↙️ cюди вводимо назву файлу з сontainer
-  res.render('signup-confirm', {
+  return res.render('signup-confirm', {
     // вказуємо назву контейнера
     name: 'signup-confirm',
     // вказуємо назву компонентів
@@ -251,7 +277,7 @@ router.post('/signup-confirm', function (req, res) {
       })
     }
 
-    const email = confirm.getData(code)
+    const email = Confirm.getData(code)
 
     if (!email) {
       return res.status(400).json({
@@ -280,11 +306,16 @@ router.post('/signup-confirm', function (req, res) {
   }
 })
 
+// ================================================================
+
+// router.get Створює нам один ентпоїнт
+
+// ↙️ тут вводимо шлях (PATH) до сторінки
 router.get('/login', function (req, res) {
   // res.render генерує нам HTML сторінку
 
   // ↙️ cюди вводимо назву файлу з сontainer
-  res.render('login', {
+  return res.render('login', {
     // вказуємо назву контейнера
     name: 'login',
     // вказуємо назву компонентів
@@ -315,7 +346,7 @@ router.post('/login', function (req, res) {
     if (!user) {
       return res.status(400).json({
         message:
-          'ПомилкаЮ Користувача з таким email не існує',
+          'Помилка. Користувач з таким email не існує',
       })
     }
 
